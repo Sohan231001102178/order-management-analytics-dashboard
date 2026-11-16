@@ -10,15 +10,18 @@ import {
 } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DownloadIcon from '@mui/icons-material/Download';
-import InsightsIcon from '@mui/icons-material/Insights';
-import SyncIcon from '@mui/icons-material/Sync';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 
 export default function TopHeaderBar({
   filters,
   onResetFilters,
   onExportCsv,
   totalFilteredCount,
-  totalRawCount
+  totalRawCount,
+  darkMode,
+  onToggleDarkMode
 }) {
   const getReportingPeriodLabel = () => {
     switch (filters.dateRange) {
@@ -40,46 +43,71 @@ export default function TopHeaderBar({
   return (
     <Box
       sx={{
-        backgroundColor: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: 3,
-        p: { xs: 2, sm: 2.5, md: 3 },
+        backgroundColor: darkMode ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.92)',
+        backdropFilter: 'blur(20px)',
+        border: darkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0',
+        borderRadius: 4,
+        p: { xs: 2.5, sm: 3 },
         mb: 3,
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         alignItems: { xs: 'flex-start', md: 'center' },
         justifyContent: 'space-between',
-        gap: 2,
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.02)'
+        gap: 2.5,
+        boxShadow: darkMode
+          ? '0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(79, 70, 229, 0.15)'
+          : '0 10px 30px -10px rgba(79, 70, 229, 0.08), 0 2px 10px rgba(0, 0, 0, 0.02)',
+        position: 'relative',
+        overflow: 'hidden'
       }}
     >
+      {/* Top colorful gradient accent line */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '4px',
+          background: 'linear-gradient(90deg, #4f46e5 0%, #06b6d4 35%, #ec4899 70%, #f59e0b 100%)'
+        }}
+      />
+
       {/* Left: Brand & Title */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.2 }}>
         <Box
           sx={{
-            width: 48,
-            height: 48,
-            borderRadius: 2.5,
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%)',
+            width: 52,
+            height: 52,
+            borderRadius: 3,
+            background: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #06b6d4 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#ffffff',
-            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
-            flexShrink: 0
+            boxShadow: '0 8px 24px rgba(79, 70, 229, 0.4)',
+            flexShrink: 0,
+            transition: 'transform 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.06) rotate(3deg)'
+            }
           }}
         >
-          <InsightsIcon sx={{ fontSize: 28 }} />
+          <AutoGraphIcon sx={{ fontSize: 30 }} />
         </Box>
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
             <Typography
               variant="h5"
               sx={{
-                fontWeight: 700,
-                color: '#0f172a',
-                fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                letterSpacing: '-0.02em'
+                fontWeight: 800,
+                fontSize: { xs: '1.35rem', sm: '1.65rem' },
+                letterSpacing: '-0.03em',
+                background: darkMode
+                  ? 'linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%)'
+                  : 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
               }}
             >
               Order Management Analytics
@@ -88,12 +116,14 @@ export default function TopHeaderBar({
               label="v2.4 Enterprise"
               size="small"
               sx={{
-                height: 22,
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                backgroundColor: '#eff6ff',
-                color: '#1d4ed8',
-                border: '1px solid #bfdbfe'
+                height: 24,
+                fontSize: '0.725rem',
+                fontWeight: 700,
+                background: darkMode
+                  ? 'linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(6, 182, 212, 0.25) 100%)'
+                  : 'linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%)',
+                color: darkMode ? '#818cf8' : '#4f46e5',
+                border: darkMode ? '1px solid rgba(129, 140, 248, 0.3)' : '1px solid #c7d2fe'
               }}
             />
           </Box>
@@ -101,22 +131,22 @@ export default function TopHeaderBar({
             direction="row"
             spacing={1.5}
             alignItems="center"
-            sx={{ mt: 0.5, flexWrap: 'wrap' }}
+            sx={{ mt: 0.6, flexWrap: 'wrap' }}
           >
-            <Typography variant="body2" sx={{ color: '#64748b' }}>
-              Reporting Period: <strong style={{ color: '#334155' }}>{getReportingPeriodLabel()}</strong>
+            <Typography variant="body2" sx={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
+              Period: <strong style={{ color: darkMode ? '#f1f5f9' : '#1e293b' }}>{getReportingPeriodLabel()}</strong>
             </Typography>
             <Typography variant="body2" sx={{ color: '#cbd5e1' }}>•</Typography>
-            <Typography variant="body2" sx={{ color: '#64748b' }}>
-              Showing <strong style={{ color: '#0f172a' }}>{totalFilteredCount}</strong> of {totalRawCount} orders
+            <Typography variant="body2" sx={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
+              Showing <strong style={{ color: '#4f46e5' }}>{totalFilteredCount}</strong> of {totalRawCount} orders
             </Typography>
           </Stack>
         </Box>
       </Box>
 
-      {/* Right: Sync Indicator & Actions */}
+      {/* Right: Actions & Controls */}
       <Stack
-        direction={{ xs: 'row' }}
+        direction="row"
         spacing={1.5}
         alignItems="center"
         sx={{
@@ -125,20 +155,38 @@ export default function TopHeaderBar({
           flexWrap: 'wrap'
         }}
       >
-        {/* Live Sync Status */}
+        {/* Dark/Light Mode Toggle */}
+        <Tooltip title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+          <IconButton
+            onClick={onToggleDarkMode}
+            sx={{
+              p: 1,
+              borderRadius: 2.5,
+              backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.08)' : '#f1f5f9',
+              color: darkMode ? '#facc15' : '#475569',
+              border: darkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0',
+              transition: 'all 0.2s',
+              '&:hover': {
+                transform: 'scale(1.08)',
+                backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0'
+              }
+            }}
+          >
+            {darkMode ? <LightModeOutlinedIcon fontSize="small" /> : <DarkModeOutlinedIcon fontSize="small" />}
+          </IconButton>
+        </Tooltip>
+
+        {/* Live Sync Glow Badge */}
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            px: 1.5,
-            py: 0.6,
-            borderRadius: 2,
-            backgroundColor: '#f8fafc',
-            border: '1px solid #e2e8f0',
-            fontSize: '0.8rem',
-            color: '#475569',
-            fontWeight: 500
+            px: 1.6,
+            py: 0.75,
+            borderRadius: 2.5,
+            backgroundColor: darkMode ? 'rgba(16, 185, 129, 0.12)' : '#ecfdf5',
+            border: darkMode ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid #a7f3d0'
           }}
         >
           <Box
@@ -147,10 +195,18 @@ export default function TopHeaderBar({
               height: 8,
               borderRadius: '50%',
               backgroundColor: '#10b981',
-              boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.2)'
+              boxShadow: '0 0 10px 2px rgba(16, 185, 129, 0.6)',
+              animation: 'pulseGlow 2s infinite ease-in-out'
             }}
           />
-          <Typography variant="caption" sx={{ fontWeight: 600, color: '#334155' }}>
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 700,
+              color: darkMode ? '#34d399' : '#047857',
+              letterSpacing: '0.02em'
+            }}
+          >
             Live Sync
           </Typography>
         </Box>
@@ -163,12 +219,18 @@ export default function TopHeaderBar({
             startIcon={<DownloadIcon />}
             onClick={onExportCsv}
             sx={{
-              borderColor: '#e2e8f0',
-              color: '#334155',
-              backgroundColor: '#ffffff',
+              py: 0.9,
+              px: 2,
+              borderRadius: 2.5,
+              borderColor: darkMode ? 'rgba(255, 255, 255, 0.15)' : '#cbd5e1',
+              color: darkMode ? '#f8fafc' : '#334155',
+              backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.04)' : '#ffffff',
+              fontWeight: 700,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
               '&:hover': {
-                borderColor: '#cbd5e1',
-                backgroundColor: '#f8fafc'
+                borderColor: '#4f46e5',
+                color: '#4f46e5',
+                backgroundColor: darkMode ? 'rgba(79, 70, 229, 0.1)' : '#f5f3ff'
               }
             }}
           >
@@ -186,14 +248,23 @@ export default function TopHeaderBar({
               onClick={onResetFilters}
               disabled={!isFiltered}
               sx={{
+                py: 0.9,
+                px: 2,
+                borderRadius: 2.5,
+                fontWeight: 700,
                 ...(isFiltered
                   ? {
-                      backgroundColor: '#2563eb',
-                      '&:hover': { backgroundColor: '#1d4ed8' }
+                      background: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)',
+                      color: '#ffffff',
+                      boxShadow: '0 4px 14px rgba(79, 70, 229, 0.4)',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #4338ca 0%, #2563eb 100%)',
+                        boxShadow: '0 6px 18px rgba(79, 70, 229, 0.5)'
+                      }
                     }
                   : {
-                      borderColor: '#e2e8f0',
-                      color: '#94a3b8'
+                      borderColor: darkMode ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
+                      color: darkMode ? '#64748b' : '#94a3b8'
                     })
               }}
             >

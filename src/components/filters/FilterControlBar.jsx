@@ -11,21 +11,18 @@ import {
   Chip,
   Stack,
   Typography,
-  IconButton,
-  Tooltip
+  IconButton
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CategoryIcon from '@mui/icons-material/Category';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RadioButtonUncheckedIcon from '@mui/material/internal/svg-icons/RadioButtonUnchecked';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 import { CATEGORIES, DATE_RANGES, STATUSES } from '../../data/mockOrders';
 import { statusTokens } from '../../theme/dashboardTheme';
 
-export default function FilterControlBar({ filters, onFilterChange }) {
+export default function FilterControlBar({ filters, onFilterChange, darkMode = false }) {
   const handleDateRangeChange = (event) => {
     onFilterChange({ ...filters, dateRange: event.target.value });
   };
@@ -46,10 +43,7 @@ export default function FilterControlBar({ filters, onFilterChange }) {
     const current = filters.statuses || [];
     let updated;
     if (current.includes(status)) {
-      // Prevent unselecting all (keep at least one)
-      if (current.length === 1) {
-        return;
-      }
+      if (current.length === 1) return; // Keep at least one
       updated = current.filter(s => s !== status);
     } else {
       updated = [...current, status];
@@ -65,15 +59,18 @@ export default function FilterControlBar({ filters, onFilterChange }) {
     <Paper
       variant="outlined"
       sx={{
-        p: { xs: 2, sm: 2.5 },
+        p: { xs: 2.2, sm: 2.8 },
         mb: 3,
-        borderRadius: 3,
-        backgroundColor: '#ffffff',
-        borderColor: '#e2e8f0',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.02)'
+        borderRadius: 4,
+        backgroundColor: darkMode ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(16px)',
+        borderColor: darkMode ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0',
+        boxShadow: darkMode
+          ? '0 8px 24px -6px rgba(0, 0, 0, 0.4)'
+          : '0 8px 24px -6px rgba(0, 0, 0, 0.04)'
       }}
     >
-      <Stack spacing={2}>
+      <Stack spacing={2.2}>
         {/* Top Controls: Search, Date Range, Category */}
         <Box
           sx={{
@@ -86,26 +83,30 @@ export default function FilterControlBar({ filters, onFilterChange }) {
           {/* Search Query */}
           <TextField
             size="small"
-            placeholder="Search Order ID, Customer, Item..."
+            placeholder="Search Order ID, Customer Name, or Product Item..."
             value={filters.searchQuery}
             onChange={handleSearchChange}
             sx={{
               flex: { xs: 1, md: 1.5 },
               '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                backgroundColor: '#f8fafc',
+                borderRadius: 2.5,
+                backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.04)' : '#f8fafc',
+                transition: 'all 0.2s',
                 '&:hover': {
-                  backgroundColor: '#ffffff'
+                  backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.08)' : '#ffffff',
+                  borderColor: '#818cf8'
                 },
                 '&.Mui-focused': {
-                  backgroundColor: '#ffffff'
+                  backgroundColor: darkMode ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
+                  borderColor: '#4f46e5',
+                  boxShadow: '0 0 0 3px rgba(79, 70, 229, 0.15)'
                 }
               }
             }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
+                  <SearchIcon sx={{ color: '#818cf8', fontSize: 20 }} />
                 </InputAdornment>
               ),
               endAdornment: filters.searchQuery ? (
@@ -119,8 +120,8 @@ export default function FilterControlBar({ filters, onFilterChange }) {
           />
 
           {/* Date Range Selector */}
-          <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 180 } }}>
-            <InputLabel id="date-range-select-label" sx={{ fontSize: '0.875rem' }}>
+          <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 185 } }}>
+            <InputLabel id="date-range-select-label" sx={{ fontSize: '0.85rem' }}>
               Date Window
             </InputLabel>
             <Select
@@ -131,10 +132,10 @@ export default function FilterControlBar({ filters, onFilterChange }) {
               onChange={handleDateRangeChange}
               startAdornment={
                 <InputAdornment position="start" sx={{ mr: 0.5 }}>
-                  <CalendarMonthIcon sx={{ color: '#64748b', fontSize: 18 }} />
+                  <CalendarMonthIcon sx={{ color: '#06b6d4', fontSize: 18 }} />
                 </InputAdornment>
               }
-              sx={{ borderRadius: 2 }}
+              sx={{ borderRadius: 2.5 }}
             >
               {DATE_RANGES.map((r) => (
                 <MenuItem key={r.value} value={r.value} sx={{ fontSize: '0.875rem' }}>
@@ -145,8 +146,8 @@ export default function FilterControlBar({ filters, onFilterChange }) {
           </FormControl>
 
           {/* Category Dropdown */}
-          <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 190 } }}>
-            <InputLabel id="category-select-label" sx={{ fontSize: '0.875rem' }}>
+          <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 195 } }}>
+            <InputLabel id="category-select-label" sx={{ fontSize: '0.85rem' }}>
               Product Category
             </InputLabel>
             <Select
@@ -157,10 +158,10 @@ export default function FilterControlBar({ filters, onFilterChange }) {
               onChange={handleCategoryChange}
               startAdornment={
                 <InputAdornment position="start" sx={{ mr: 0.5 }}>
-                  <CategoryIcon sx={{ color: '#64748b', fontSize: 18 }} />
+                  <CategoryIcon sx={{ color: '#ec4899', fontSize: 18 }} />
                 </InputAdornment>
               }
-              sx={{ borderRadius: 2 }}
+              sx={{ borderRadius: 2.5 }}
             >
               {CATEGORIES.map((cat) => (
                 <MenuItem key={cat} value={cat} sx={{ fontSize: '0.875rem' }}>
@@ -172,7 +173,7 @@ export default function FilterControlBar({ filters, onFilterChange }) {
         </Box>
 
         {/* Divider hairline */}
-        <Box sx={{ borderBottom: '1px solid #f1f5f9' }} />
+        <Box sx={{ borderBottom: darkMode ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #f1f5f9' }} />
 
         {/* Bottom Status Multi-select Chips */}
         <Box
@@ -186,21 +187,21 @@ export default function FilterControlBar({ filters, onFilterChange }) {
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-              <FilterAltIcon sx={{ color: '#64748b', fontSize: 18 }} />
+              <FilterListIcon sx={{ color: '#818cf8', fontSize: 18 }} />
               <Typography
                 variant="subtitle2"
                 sx={{
-                  color: '#64748b',
+                  color: darkMode ? '#94a3b8' : '#64748b',
                   fontSize: '0.75rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.04em'
+                  fontWeight: 700,
+                  letterSpacing: '0.05em'
                 }}
               >
-                Order Status:
+                ORDER STATUS:
               </Typography>
             </Box>
 
-            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.8 }}>
+            <Stack direction="row" spacing={1.2} sx={{ flexWrap: 'wrap', gap: 1 }}>
               {STATUSES.map((status) => {
                 const isSelected = filters.statuses.includes(status);
                 const meta = statusTokens[status];
@@ -218,23 +219,30 @@ export default function FilterControlBar({ filters, onFilterChange }) {
                           height: 8,
                           borderRadius: '50%',
                           backgroundColor: isSelected ? meta.dot : '#cbd5e1',
-                          ml: 0.5
+                          boxShadow: isSelected ? `0 0 8px ${meta.glow}` : 'none',
+                          ml: 0.8
                         }}
                       />
                     }
                     sx={{
                       borderRadius: '9999px',
-                      fontWeight: 600,
+                      fontWeight: 700,
                       fontSize: '0.75rem',
-                      height: 30,
-                      px: 0.5,
-                      transition: 'all 0.15s ease-in-out',
-                      backgroundColor: isSelected ? meta.bg : '#f8fafc',
-                      color: isSelected ? meta.text : '#64748b',
-                      border: `1px solid ${isSelected ? meta.border : '#e2e8f0'}`,
+                      height: 32,
+                      px: 0.8,
+                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      background: isSelected
+                        ? (darkMode ? `linear-gradient(135deg, ${meta.gradient[0]}22 0%, ${meta.gradient[1]}33 100%)` : meta.bg)
+                        : (darkMode ? 'rgba(255, 255, 255, 0.04)' : '#f8fafc'),
+                      color: isSelected
+                        ? (darkMode ? meta.dot : meta.text)
+                        : (darkMode ? '#64748b' : '#94a3b8'),
+                      border: `1px solid ${isSelected ? meta.border : (darkMode ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0')}`,
+                      transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                      boxShadow: isSelected ? `0 4px 12px ${meta.glow}` : 'none',
                       '&:hover': {
-                        backgroundColor: isSelected ? meta.bg : '#f1f5f9',
-                        borderColor: isSelected ? meta.dot : '#cbd5e1'
+                        transform: 'scale(1.04)',
+                        borderColor: meta.dot
                       }
                     }}
                   />
@@ -253,11 +261,11 @@ export default function FilterControlBar({ filters, onFilterChange }) {
                 border: 'none',
                 p: 0,
                 fontSize: '0.75rem',
-                color: '#2563eb',
-                fontWeight: 600,
+                color: '#4f46e5',
+                fontWeight: 700,
                 cursor: 'pointer',
                 textDecoration: 'underline',
-                '&:hover': { color: '#1d4ed8' }
+                '&:hover': { color: '#3730a3' }
               }}
             >
               Select All Statuses

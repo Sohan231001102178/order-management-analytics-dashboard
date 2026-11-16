@@ -8,7 +8,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import KpiMetricCard from './KpiMetricCard';
 import { formatCurrency, formatNumber } from '../../utils/formatters';
 
-export default function KpiSummaryRow({ metrics }) {
+export default function KpiSummaryRow({ metrics, darkMode = false }) {
   const {
     revenue = 0,
     revenueDelta = 0,
@@ -27,8 +27,9 @@ export default function KpiSummaryRow({ metrics }) {
       value: formatCurrency(revenue),
       delta: revenueDelta,
       icon: AttachMoneyIcon,
-      iconColor: '#2563eb', // Royal Indigo
-      iconBg: '#eff6ff',
+      iconGradient: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)',
+      accentColor: '#4f46e5',
+      glowColor: 'rgba(79, 70, 229, 0.3)',
       subtext: 'Net recognized income'
     },
     {
@@ -37,8 +38,9 @@ export default function KpiSummaryRow({ metrics }) {
       value: `${formatNumber(sales)} units`,
       delta: salesDelta,
       icon: TrendingUpIcon,
-      iconColor: '#0d9488', // Teal
-      iconBg: '#f0fdfa',
+      iconGradient: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
+      accentColor: '#0d9488',
+      glowColor: 'rgba(13, 148, 136, 0.3)',
       subtext: 'Products ordered'
     },
     {
@@ -47,8 +49,9 @@ export default function KpiSummaryRow({ metrics }) {
       value: `${formatNumber(orders)}`,
       delta: ordersDelta,
       icon: ShoppingBagIcon,
-      iconColor: '#7c3aed', // Purple
-      iconBg: '#f5f3ff',
+      iconGradient: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
+      accentColor: '#8b5cf6',
+      glowColor: 'rgba(139, 92, 246, 0.3)',
       subtext: 'Transactions processed'
     },
     {
@@ -57,8 +60,9 @@ export default function KpiSummaryRow({ metrics }) {
       value: `${formatNumber(customers)}`,
       delta: customersDelta,
       icon: PeopleIcon,
-      iconColor: '#ea580c', // Orange
-      iconBg: '#fff7ed',
+      iconGradient: 'linear-gradient(135deg, #f97316 0%, #f59e0b 100%)',
+      accentColor: '#f97316',
+      glowColor: 'rgba(249, 115, 22, 0.3)',
       subtext: 'Unique purchaser accounts'
     }
   ];
@@ -68,7 +72,7 @@ export default function KpiSummaryRow({ metrics }) {
       <Grid container spacing={2.5}>
         {cards.map((card) => (
           <Grid item xs={12} sm={6} md={3} key={card.id}>
-            <KpiMetricCard {...card} />
+            <KpiMetricCard {...card} darkMode={darkMode} />
           </Grid>
         ))}
       </Grid>

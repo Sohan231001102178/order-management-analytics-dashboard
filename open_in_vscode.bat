@@ -1,0 +1,3 @@
+@echo off
+echo Opening OMS Analytics Dashboard in VS Code...
+code "%~dp0"

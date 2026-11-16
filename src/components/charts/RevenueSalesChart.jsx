@@ -3,52 +3,52 @@ import {
   Paper,
   Box,
   Typography,
-  Stack,
-  useTheme
+  Stack
 } from '@mui/material';
 import {
   ResponsiveContainer,
-  LineChart,
+  AreaChart,
+  Area,
   Line,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend
+  Tooltip
 } from 'recharts';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { formatCurrency, formatNumber } from '../../utils/formatters';
 
-// Custom Styled Tooltip
-const CustomChartTooltip = ({ active, payload, label }) => {
+const CustomChartTooltip = ({ active, payload, label, darkMode }) => {
   if (active && payload && payload.length) {
     return (
       <Paper
-        elevation={4}
+        elevation={6}
         sx={{
-          p: 1.5,
-          borderRadius: 2,
-          backgroundColor: '#ffffff',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          minWidth: 170
+          p: 1.8,
+          borderRadius: 3,
+          backgroundColor: darkMode ? '#111827' : '#ffffff',
+          border: darkMode ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid #e2e8f0',
+          boxShadow: darkMode
+            ? '0 12px 28px rgba(0, 0, 0, 0.6), 0 0 15px rgba(79, 70, 229, 0.2)'
+            : '0 12px 28px -6px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(79, 70, 229, 0.08)',
+          minWidth: 180
         }}
       >
         <Typography
           variant="subtitle2"
           sx={{
-            fontWeight: 700,
-            color: '#0f172a',
-            fontSize: '0.8rem',
-            mb: 1,
-            pb: 0.5,
-            borderBottom: '1px solid #f1f5f9'
+            fontWeight: 800,
+            color: darkMode ? '#f8fafc' : '#0f172a',
+            fontSize: '0.825rem',
+            mb: 1.2,
+            pb: 0.6,
+            borderBottom: darkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #f1f5f9'
           }}
         >
           {label}
         </Typography>
 
-        <Stack spacing={0.8}>
+        <Stack spacing={1}>
           {payload.map((entry, index) => {
             const isRevenue = entry.dataKey === 'revenue';
             return (
@@ -64,15 +64,16 @@ const CustomChartTooltip = ({ active, payload, label }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                   <Box
                     sx={{
-                      width: 8,
-                      height: 8,
+                      width: 9,
+                      height: 9,
                       borderRadius: '50%',
-                      backgroundColor: entry.color
+                      backgroundColor: entry.color,
+                      boxShadow: `0 0 8px ${entry.color}`
                     }}
                   />
                   <Typography
                     variant="caption"
-                    sx={{ color: '#64748b', fontWeight: 500 }}
+                    sx={{ color: darkMode ? '#94a3b8' : '#64748b', fontWeight: 600 }}
                   >
                     {entry.name}:
                   </Typography>
@@ -80,8 +81,8 @@ const CustomChartTooltip = ({ active, payload, label }) => {
                 <Typography
                   variant="caption"
                   sx={{
-                    fontWeight: 700,
-                    color: '#0f172a',
+                    fontWeight: 800,
+                    color: darkMode ? '#f8fafc' : '#0f172a',
                     fontVariantNumeric: 'tabular-nums'
                   }}
                 >
@@ -97,43 +98,59 @@ const CustomChartTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function RevenueSalesChart({ data = [] }) {
-  const theme = useTheme();
-
+export default function RevenueSalesChart({ data = [], darkMode = false }) {
   return (
     <Paper
       variant="outlined"
       sx={{
-        p: { xs: 2, sm: 2.5 },
-        borderRadius: 3,
-        borderColor: '#e2e8f0',
-        backgroundColor: '#ffffff',
+        p: { xs: 2.2, sm: 2.8 },
+        borderRadius: 4,
+        borderColor: darkMode ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0',
+        backgroundColor: darkMode ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(16px)',
+        boxShadow: darkMode
+          ? '0 10px 30px -10px rgba(0, 0, 0, 0.5)'
+          : '0 10px 30px -10px rgba(79, 70, 229, 0.06)',
         height: '100%',
         display: 'flex',
         flexDirection: 'column'
       }}
     >
-      {/* Chart Card Header */}
+      {/* Chart Header */}
       <Box
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
           justifyContent: 'space-between',
-          gap: 1,
-          mb: 2
+          gap: 1.5,
+          mb: 2.5
         }}
       >
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ShowChartIcon sx={{ color: '#2563eb', fontSize: 20 }} />
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                borderRadius: 2,
+                background: 'linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                boxShadow: '0 4px 10px rgba(79, 70, 229, 0.3)'
+              }}
+            >
+              <ShowChartIcon sx={{ fontSize: 18 }} />
+            </Box>
             <Typography
               variant="h6"
               sx={{
-                fontWeight: 700,
-                color: '#0f172a',
-                fontSize: '1rem',
-                letterSpacing: '-0.01em'
+                fontWeight: 800,
+                color: darkMode ? '#f8fafc' : '#0f172a',
+                fontSize: '1.05rem',
+                letterSpacing: '-0.02em'
               }}
             >
               Revenue & Sales Volume Trend
@@ -141,7 +158,7 @@ export default function RevenueSalesChart({ data = [] }) {
           </Box>
           <Typography
             variant="body2"
-            sx={{ color: '#64748b', fontSize: '0.8rem', mt: 0.2 }}
+            sx={{ color: darkMode ? '#94a3b8' : '#64748b', fontSize: '0.8rem', mt: 0.3 }}
           >
             Chronological aggregation across active filter constraints
           </Typography>
@@ -149,29 +166,52 @@ export default function RevenueSalesChart({ data = [] }) {
 
         {/* Custom Legend Badges */}
         <Stack direction="row" spacing={1.5} alignItems="center">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.8,
+              px: 1.2,
+              py: 0.5,
+              borderRadius: 2,
+              backgroundColor: darkMode ? 'rgba(79, 70, 229, 0.15)' : '#eff6ff',
+              border: darkMode ? '1px solid rgba(79, 70, 229, 0.3)' : '1px solid #c7d2fe'
+            }}
+          >
             <Box
               sx={{
                 width: 10,
-                height: 3,
+                height: 4,
                 borderRadius: 1,
-                backgroundColor: '#2563eb'
+                background: 'linear-gradient(90deg, #4f46e5, #818cf8)'
               }}
             />
-            <Typography variant="caption" sx={{ color: '#475569', fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: darkMode ? '#a5b4fc' : '#4338ca', fontWeight: 700 }}>
               Revenue ($)
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.8,
+              px: 1.2,
+              py: 0.5,
+              borderRadius: 2,
+              backgroundColor: darkMode ? 'rgba(6, 182, 212, 0.15)' : '#ecfeff',
+              border: darkMode ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid #a5f3fc'
+            }}
+          >
             <Box
               sx={{
                 width: 10,
-                height: 3,
+                height: 4,
                 borderRadius: 1,
-                backgroundColor: '#0d9488'
+                background: 'linear-gradient(90deg, #0d9488, #2dd4bf)'
               }}
             />
-            <Typography variant="caption" sx={{ color: '#475569', fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: darkMode ? '#67e8f9' : '#0e7490', fontWeight: 700 }}>
               Sales (Units)
             </Typography>
           </Box>
@@ -188,42 +228,53 @@ export default function RevenueSalesChart({ data = [] }) {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#f8fafc',
-              borderRadius: 2,
-              border: '1px dashed #cbd5e1',
+              backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.02)' : '#f8fafc',
+              borderRadius: 3,
+              border: darkMode ? '1px dashed rgba(255, 255, 255, 0.1)' : '1px dashed #cbd5e1',
               p: 3
             }}
           >
-            <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
+            <Typography variant="body2" sx={{ color: darkMode ? '#94a3b8' : '#64748b', fontWeight: 600 }}>
               No transactional data available for the current filter criteria.
             </Typography>
-            <Typography variant="caption" sx={{ color: '#94a3b8', mt: 0.5 }}>
+            <Typography variant="caption" sx={{ color: darkMode ? '#64748b' : '#94a3b8', mt: 0.5 }}>
               Try loosening your date window or category selection.
             </Typography>
           </Box>
         ) : (
           <ResponsiveContainer width="100%" height={320}>
-            <LineChart
+            <AreaChart
               data={data}
               margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
             >
+              <defs>
+                <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4f46e5" stopOpacity={darkMode ? 0.45 : 0.25} />
+                  <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.0} />
+                </linearGradient>
+                <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#06b6d4" stopOpacity={darkMode ? 0.35 : 0.18} />
+                  <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.0} />
+                </linearGradient>
+              </defs>
+
               <CartesianGrid
                 strokeDasharray="3 3"
                 vertical={false}
-                stroke="#f1f5f9"
+                stroke={darkMode ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9'}
               />
               <XAxis
                 dataKey="date"
-                stroke="#94a3b8"
+                stroke={darkMode ? '#64748b' : '#94a3b8'}
                 fontSize={11}
                 tickLine={false}
-                axisLine={{ stroke: '#e2e8f0' }}
+                axisLine={{ stroke: darkMode ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0' }}
                 dy={6}
               />
               {/* Left Y-Axis: Revenue in $k */}
               <YAxis
                 yAxisId="left"
-                stroke="#94a3b8"
+                stroke={darkMode ? '#64748b' : '#94a3b8'}
                 fontSize={11}
                 tickLine={false}
                 axisLine={false}
@@ -234,35 +285,39 @@ export default function RevenueSalesChart({ data = [] }) {
               <YAxis
                 yAxisId="right"
                 orientation="right"
-                stroke="#94a3b8"
+                stroke={darkMode ? '#64748b' : '#94a3b8'}
                 fontSize={11}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(val) => `${val}u`}
                 width={40}
               />
-              <Tooltip content={<CustomChartTooltip />} />
-              <Line
+              <Tooltip content={<CustomChartTooltip darkMode={darkMode} />} />
+              
+              <Area
                 yAxisId="left"
                 type="monotone"
                 dataKey="revenue"
                 name="Revenue"
-                stroke="#2563eb" // Indigo
-                strokeWidth={2.5}
-                dot={{ r: 3, fill: '#2563eb', strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: '#1d4ed8', stroke: '#ffffff', strokeWidth: 2 }}
+                stroke="#4f46e5"
+                strokeWidth={3}
+                fill="url(#revenueGrad)"
+                dot={{ r: 3.5, fill: '#4f46e5', strokeWidth: 2, stroke: '#ffffff' }}
+                activeDot={{ r: 7, fill: '#4f46e5', stroke: '#ffffff', strokeWidth: 2.5 }}
               />
-              <Line
+              <Area
                 yAxisId="right"
                 type="monotone"
                 dataKey="sales"
                 name="Sales Volume"
-                stroke="#0d9488" // Teal
+                stroke="#06b6d4"
                 strokeWidth={2.5}
-                dot={{ r: 3, fill: '#0d9488', strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: '#0f766e', stroke: '#ffffff', strokeWidth: 2 }}
+                fill="url(#salesGrad)"
+                strokeDasharray="4 2"
+                dot={{ r: 3, fill: '#06b6d4', strokeWidth: 2, stroke: '#ffffff' }}
+                activeDot={{ r: 6, fill: '#06b6d4', stroke: '#ffffff', strokeWidth: 2 }}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         )}
       </Box>

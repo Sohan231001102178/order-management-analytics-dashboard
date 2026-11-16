@@ -12,8 +12,7 @@ import {
   TableSortLabel,
   TablePagination,
   Chip,
-  Tooltip,
-  IconButton
+  Tooltip
 } from '@mui/material';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -31,7 +30,7 @@ const HEAD_CELLS = [
   { id: 'amount', label: 'Amount ($)', numeric: true, sortable: true }
 ];
 
-export default function RecentOrdersTable({ orders = [] }) {
+export default function RecentOrdersTable({ orders = [], darkMode = false }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [orderBy, setOrderBy] = useState('date');
@@ -52,7 +51,6 @@ export default function RecentOrdersTable({ orders = [] }) {
     setPage(0);
   };
 
-  // Sort comparator
   const sortedOrders = useMemo(() => {
     const comparator = (a, b) => {
       let valA = a[orderBy];
@@ -74,7 +72,6 @@ export default function RecentOrdersTable({ orders = [] }) {
     return [...orders].sort(comparator);
   }, [orders, orderBy, orderDirection]);
 
-  // Paginated slice
   const paginatedOrders = useMemo(() => {
     const start = page * rowsPerPage;
     return sortedOrders.slice(start, start + rowsPerPage);
@@ -82,11 +79,36 @@ export default function RecentOrdersTable({ orders = [] }) {
 
   const getCategoryColor = (cat) => {
     switch (cat) {
-      case 'Electronics': return { bg: '#eff6ff', text: '#1d4ed8', border: '#bfdbfe' };
-      case 'Software': return { bg: '#faf5ff', text: '#6b21a8', border: '#e9d5ff' };
-      case 'Apparel': return { bg: '#fdf2f8', text: '#9d174d', border: '#fbcfe8' };
-      case 'Home': return { bg: '#ecfdf5', text: '#065f46', border: '#a7f3d0' };
-      default: return { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1' };
+      case 'Electronics':
+        return {
+          bg: darkMode ? 'rgba(59, 130, 246, 0.15)' : 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+          text: darkMode ? '#60a5fa' : '#1d4ed8',
+          border: darkMode ? 'rgba(59, 130, 246, 0.3)' : '#bfdbfe'
+        };
+      case 'Software':
+        return {
+          bg: darkMode ? 'rgba(168, 85, 247, 0.15)' : 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)',
+          text: darkMode ? '#c084fc' : '#7e22ce',
+          border: darkMode ? 'rgba(168, 85, 247, 0.3)' : '#e9d5ff'
+        };
+      case 'Apparel':
+        return {
+          bg: darkMode ? 'rgba(244, 63, 94, 0.15)' : 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)',
+          text: darkMode ? '#fb7185' : '#be123c',
+          border: darkMode ? 'rgba(244, 63, 94, 0.3)' : '#fecdd3'
+        };
+      case 'Home':
+        return {
+          bg: darkMode ? 'rgba(16, 185, 129, 0.15)' : 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+          text: darkMode ? '#34d399' : '#047857',
+          border: darkMode ? 'rgba(16, 185, 129, 0.3)' : '#a7f3d0'
+        };
+      default:
+        return {
+          bg: darkMode ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9',
+          text: darkMode ? '#94a3b8' : '#475569',
+          border: darkMode ? 'rgba(255, 255, 255, 0.1)' : '#cbd5e1'
+        };
     }
   };
 
@@ -94,11 +116,14 @@ export default function RecentOrdersTable({ orders = [] }) {
     <Paper
       variant="outlined"
       sx={{
-        borderRadius: 3,
-        borderColor: '#e2e8f0',
-        backgroundColor: '#ffffff',
+        borderRadius: 4,
+        borderColor: darkMode ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0',
+        backgroundColor: darkMode ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(16px)',
         overflow: 'hidden',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.02)'
+        boxShadow: darkMode
+          ? '0 10px 30px -10px rgba(0, 0, 0, 0.5)'
+          : '0 10px 30px -10px rgba(79, 70, 229, 0.06)'
       }}
     >
       {/* Table Header Masthead */}
@@ -109,20 +134,34 @@ export default function RecentOrdersTable({ orders = [] }) {
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
           justifyContent: 'space-between',
-          gap: 1,
-          borderBottom: '1px solid #e2e8f0'
+          gap: 1.5,
+          borderBottom: darkMode ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e2e8f0'
         }}
       >
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ReceiptLongIcon sx={{ color: '#2563eb', fontSize: 20 }} />
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                borderRadius: 2,
+                background: 'linear-gradient(135deg, #0d9488 0%, #3b82f6 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                boxShadow: '0 4px 10px rgba(13, 148, 136, 0.3)'
+              }}
+            >
+              <ReceiptLongIcon sx={{ fontSize: 18 }} />
+            </Box>
             <Typography
               variant="h6"
               sx={{
-                fontWeight: 700,
-                color: '#0f172a',
-                fontSize: '1rem',
-                letterSpacing: '-0.01em'
+                fontWeight: 800,
+                color: darkMode ? '#f8fafc' : '#0f172a',
+                fontSize: '1.05rem',
+                letterSpacing: '-0.02em'
               }}
             >
               Order Ledger & Transaction Records
@@ -130,7 +169,7 @@ export default function RecentOrdersTable({ orders = [] }) {
           </Box>
           <Typography
             variant="body2"
-            sx={{ color: '#64748b', fontSize: '0.8rem', mt: 0.2 }}
+            sx={{ color: darkMode ? '#94a3b8' : '#64748b', fontSize: '0.8rem', mt: 0.3 }}
           >
             Direct drill-down into normalized line items ({orders.length} matches)
           </Typography>
@@ -148,13 +187,14 @@ export default function RecentOrdersTable({ orders = [] }) {
                   align={headCell.numeric ? 'right' : 'left'}
                   sortDirection={orderBy === headCell.id ? orderDirection : false}
                   sx={{
-                    fontWeight: 700,
+                    fontWeight: 800,
                     fontSize: '0.75rem',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    color: '#64748b',
-                    backgroundColor: '#f8fafc',
-                    py: 1.5
+                    letterSpacing: '0.06em',
+                    color: darkMode ? '#94a3b8' : '#64748b',
+                    backgroundColor: darkMode ? '#1e293b' : '#f8fafc',
+                    borderBottom: darkMode ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e2e8f0',
+                    py: 1.8
                   }}
                 >
                   {headCell.sortable ? (
@@ -162,6 +202,14 @@ export default function RecentOrdersTable({ orders = [] }) {
                       active={orderBy === headCell.id}
                       direction={orderBy === headCell.id ? orderDirection : 'asc'}
                       onClick={() => handleRequestSort(headCell.id)}
+                      sx={{
+                        '&.Mui-active': {
+                          color: '#4f46e5'
+                        },
+                        '& .MuiTableSortLabel-icon': {
+                          color: '#4f46e5 !important'
+                        }
+                      }}
                     >
                       {headCell.label}
                     </TableSortLabel>
@@ -188,22 +236,22 @@ export default function RecentOrdersTable({ orders = [] }) {
                   >
                     <Box
                       sx={{
-                        width: 48,
-                        height: 48,
+                        width: 52,
+                        height: 52,
                         borderRadius: '50%',
-                        backgroundColor: '#f1f5f9',
+                        backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#94a3b8'
+                        color: darkMode ? '#64748b' : '#94a3b8'
                       }}
                     >
-                      <SearchOffIcon sx={{ fontSize: 26 }} />
+                      <SearchOffIcon sx={{ fontSize: 28 }} />
                     </Box>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#334155' }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: darkMode ? '#f8fafc' : '#334155' }}>
                       No matching orders found
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#64748b', maxWidth: 400 }}>
+                    <Typography variant="body2" sx={{ color: darkMode ? '#94a3b8' : '#64748b', maxWidth: 420 }}>
                       Try adjusting or clearing your active filters, search criteria, or date window.
                     </Typography>
                   </Box>
@@ -218,28 +266,28 @@ export default function RecentOrdersTable({ orders = [] }) {
                     key={order.id}
                     hover
                     sx={{
+                      transition: 'all 0.15s ease',
                       '&:hover': {
-                        backgroundColor: '#f8fafc'
-                      },
-                      transition: 'background-color 0.15s ease'
+                        backgroundColor: darkMode ? 'rgba(79, 70, 229, 0.08) !important' : 'rgba(79, 70, 229, 0.04) !important'
+                      }
                     }}
                   >
                     {/* Order ID */}
-                    <TableCell sx={{ fontWeight: 600, color: '#0f172a' }}>
+                    <TableCell sx={{ fontWeight: 700, color: darkMode ? '#f8fafc' : '#0f172a' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography
                           variant="body2"
                           sx={{
                             fontFamily: 'monospace',
-                            fontWeight: 700,
-                            color: '#2563eb'
+                            fontWeight: 800,
+                            color: '#4f46e5'
                           }}
                         >
                           {order.id}
                         </Typography>
                         {order.items && (
                           <Tooltip title={`Items: ${order.items.join(', ')}`}>
-                            <InfoOutlinedIcon sx={{ fontSize: 15, color: '#94a3b8', cursor: 'pointer' }} />
+                            <InfoOutlinedIcon sx={{ fontSize: 16, color: '#94a3b8', cursor: 'pointer', '&:hover': { color: '#4f46e5' } }} />
                           </Tooltip>
                         )}
                       </Box>
@@ -248,10 +296,10 @@ export default function RecentOrdersTable({ orders = [] }) {
                     {/* Customer */}
                     <TableCell>
                       <Box>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#0f172a' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: darkMode ? '#f8fafc' : '#0f172a' }}>
                           {order.customerName}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: '#64748b' }}>
+                        <Typography variant="caption" sx={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
                           {order.customerEmail}
                         </Typography>
                       </Box>
@@ -263,10 +311,10 @@ export default function RecentOrdersTable({ orders = [] }) {
                         label={order.category}
                         size="small"
                         sx={{
-                          height: 24,
-                          fontSize: '0.72rem',
-                          fontWeight: 600,
-                          backgroundColor: catStyle.bg,
+                          height: 25,
+                          fontSize: '0.725rem',
+                          fontWeight: 700,
+                          background: catStyle.bg,
                           color: catStyle.text,
                           border: `1px solid ${catStyle.border}`
                         }}
@@ -274,24 +322,24 @@ export default function RecentOrdersTable({ orders = [] }) {
                     </TableCell>
 
                     {/* Order Date */}
-                    <TableCell sx={{ color: '#475569', fontSize: '0.825rem' }}>
+                    <TableCell sx={{ color: darkMode ? '#cbd5e1' : '#475569', fontSize: '0.825rem', fontWeight: 500 }}>
                       {formatDate(order.date, 'medium')}
                     </TableCell>
 
                     {/* Status Badge */}
                     <TableCell>
-                      <OrderStatusBadge status={order.status} />
+                      <OrderStatusBadge status={order.status} darkMode={darkMode} />
                     </TableCell>
 
                     {/* Amount */}
                     <TableCell
                       align="right"
                       sx={{
-                        fontWeight: 700,
-                        color: order.status === 'Cancelled' ? '#94a3b8' : '#0f172a',
+                        fontWeight: 800,
+                        color: order.status === 'Cancelled' ? '#94a3b8' : (darkMode ? '#f8fafc' : '#0f172a'),
                         textDecoration: order.status === 'Cancelled' ? 'line-through' : 'none',
                         fontVariantNumeric: 'tabular-nums',
-                        fontSize: '0.9rem'
+                        fontSize: '0.925rem'
                       }}
                     >
                       {formatCurrency(order.amount)}
@@ -314,8 +362,9 @@ export default function RecentOrdersTable({ orders = [] }) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
-          borderTop: '1px solid #e2e8f0',
-          backgroundColor: '#ffffff'
+          borderTop: darkMode ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e2e8f0',
+          backgroundColor: darkMode ? '#111827' : '#ffffff',
+          color: darkMode ? '#94a3b8' : '#64748b'
         }}
       />
     </Paper>

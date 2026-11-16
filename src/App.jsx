@@ -10,8 +10,8 @@ import {
   Alert
 } from '@mui/material';
 
-import { dashboardTheme } from './theme/dashboardTheme';
-import { rawOrdersData, STATUSES } from './data/mockOrders';
+import { getDashboardTheme } from './theme/dashboardTheme';
+import { rawOrdersData } from './data/mockOrders';
 import {
   filterOrders,
   computeKpiMetrics,
@@ -35,9 +35,14 @@ const INITIAL_FILTERS = {
 
 export default function App() {
   const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [darkMode, setDarkMode] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Memoized Selector Pipeline (Unidirectional Data Flow)
+  // Dynamic Theme with Dark/Light Mode
+  const activeTheme = useMemo(() => {
+    return getDashboardTheme(darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
   // Step 1: Predicate Filtering
   const filteredOrders = useMemo(() => {
     return filterOrders(rawOrdersData, filters);
@@ -57,6 +62,11 @@ export default function App() {
   const statusDistribution = useMemo(() => {
     return groupOrdersByStatus(filteredOrders);
   }, [filteredOrders]);
+
+  // Toggle Dark Mode
+  const handleToggleDarkMode = useCallback(() => {
+    setDarkMode((prev) => !prev);
+  }, []);
 
   // Reset Filters handler
   const handleResetFilters = useCallback(() => {
@@ -117,14 +127,14 @@ export default function App() {
   }, [filteredOrders, filters.dateRange]);
 
   return (
-    <ThemeProvider theme={dashboardTheme}>
+    <ThemeProvider theme={activeTheme}>
       <CssBaseline />
       <Box
         sx={{
           minHeight: '100vh',
-          backgroundColor: '#f8fafc',
           py: { xs: 2.5, sm: 3.5, md: 4 },
-          px: { xs: 1.5, sm: 2, md: 3 }
+          px: { xs: 1.5, sm: 2, md: 3 },
+          transition: 'background-color 0.3s ease'
         }}
       >
         <Container maxWidth="xl" disableGutters sx={{ maxWidth: '1440px !important' }}>
@@ -135,52 +145,56 @@ export default function App() {
             onExportCsv={handleExportCsv}
             totalFilteredCount={filteredOrders.length}
             totalRawCount={rawOrdersData.length}
+            darkMode={darkMode}
+            onToggleDarkMode={handleToggleDarkMode}
           />
 
           {/* Tier 2: Controls */}
           <FilterControlBar
             filters={filters}
             onFilterChange={handleFilterChange}
+            darkMode={darkMode}
           />
 
           {/* Tier 3: KPIs */}
-          <KpiSummaryRow metrics={kpiMetrics} />
+          <KpiSummaryRow metrics={kpiMetrics} darkMode={darkMode} />
 
           {/* Tier 4: Analytics (Asymmetric 8:4 split) */}
           <Grid container spacing={3} sx={{ mb: 3 }}>
             <Grid item xs={12} lg={8}>
-              <RevenueSalesChart data={timeSeriesData} />
+              <RevenueSalesChart data={timeSeriesData} darkMode={darkMode} />
             </Grid>
             <Grid item xs={12} lg={4}>
               <OrderStatusPieChart
                 data={statusDistribution}
                 totalOrders={filteredOrders.length}
                 onToggleStatus={handleToggleStatusFromPie}
+                darkMode={darkMode}
               />
             </Grid>
           </Grid>
 
           {/* Tier 5: Ledger */}
-          <RecentOrdersTable orders={filteredOrders} />
+          <RecentOrdersTable orders={filteredOrders} darkMode={darkMode} />
 
           {/* Dashboard Footer info */}
           <Box
             sx={{
               mt: 4,
               pt: 2.5,
-              borderTop: '1px solid #e2e8f0',
+              borderTop: darkMode ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e2e8f0',
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: 1.5,
-              color: '#94a3b8'
+              color: darkMode ? '#64748b' : '#94a3b8'
             }}
           >
-            <Typography variant="caption" sx={{ color: '#64748b' }}>
+            <Typography variant="caption" sx={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
               Order Management Systems (OMS) Analytics Architecture • React 18 & MUI v5 / Recharts
             </Typography>
-            <Typography variant="caption" sx={{ color: '#94a3b8' }}>
+            <Typography variant="caption" sx={{ color: darkMode ? '#64748b' : '#94a3b8' }}>
               Unidirectional Reactive Flow Pipeline • 60 FPS Single Source of Truth
             </Typography>
           </Box>
@@ -201,8 +215,8 @@ export default function App() {
             width: '100%',
             backgroundColor: '#0f172a',
             color: '#ffffff',
-            borderRadius: 2,
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
+            borderRadius: 2.5,
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
             '& .MuiAlert-icon': {
               color: '#38bdf8'
             }
