@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Box } from '@mui/material';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import PeopleIcon from '@mui/icons-material/People';
@@ -26,7 +26,7 @@ export default function KpiSummaryRow({ metrics, darkMode = false }) {
       title: 'Total Revenue',
       value: formatCurrency(revenue),
       delta: revenueDelta,
-      icon: AttachMoneyIcon,
+      icon: CurrencyRupeeIcon,
       iconGradient: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)',
       accentColor: '#4f46e5',
       glowColor: 'rgba(79, 70, 229, 0.3)',

@@ -732,9 +732,9 @@
       };
     });
 
-    // Formatters
-    const fmtCurrency = (n) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const fmtNumber = (n) => Number(n || 0).toLocaleString('en-US');
+    // Formatters in Indian Rupee (₹)
+    const fmtCurrency = (n) => `₹${Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const fmtNumber = (n) => Number(n || 0).toLocaleString('en-IN');
 
     function App() {
       const [filters, setFilters] = useState({
@@ -1106,7 +1106,7 @@
                 <div className="chart-legend-wrap">
                   <div className="legend-item">
                     <div className="legend-bar" style={{ background: '#2563eb' }}></div>
-                    Revenue ($)
+                    Revenue (₹)
                   </div>
                   <div className="legend-item">
                     <div className="legend-bar" style={{ background: '#0d9488' }}></div>
@@ -1315,7 +1315,7 @@
                     <th onClick={() => handleSort('category')}>Category {sortField === 'category' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                     <th onClick={() => handleSort('daysAgo')}>Order Date {sortField === 'daysAgo' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                     <th onClick={() => handleSort('status')}>Status {sortField === 'status' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
-                    <th className="num" onClick={() => handleSort('amount')}>Amount ($) {sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
+                    <th className="num" onClick={() => handleSort('amount')}>Amount (₹) {sortField === 'amount' ? (sortDir === 'asc' ? '↑' : '↓') : ''}</th>
                   </tr>
                 </thead>
                 <tbody>

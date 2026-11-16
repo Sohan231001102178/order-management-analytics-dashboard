@@ -99,7 +99,7 @@ export default function App() {
       return;
     }
 
-    const headers = ['Order ID', 'Customer Name', 'Customer Email', 'Category', 'Order Date', 'Status', 'Amount ($)', 'Quantity', 'Items'];
+    const headers = ['Order ID', 'Customer Name', 'Customer Email', 'Category', 'Order Date', 'Status', 'Amount (₹)', 'Quantity', 'Items'];
     const rows = filteredOrders.map(order => [
       order.id,
       `"${order.customerName}"`,

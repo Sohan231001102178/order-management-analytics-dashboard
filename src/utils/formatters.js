@@ -1,43 +1,47 @@
-// Formatters utility for OMS Analytics Dashboard
+// Formatters utility for OMS Analytics Dashboard (Indian Rupee ₹)
 
 /**
- * Format currency in USD ($)
+ * Format currency in Indian Rupees (₹)
  * @param {number} amount
- * @param {boolean} compact - whether to use $1.2k format
+ * @param {boolean} compact - whether to use ₹23.4k / ₹1.5L format
  */
 export const formatCurrency = (amount, compact = false) => {
-  if (amount === undefined || amount === null || isNaN(amount)) return '$0.00';
+  if (amount === undefined || amount === null || isNaN(amount)) return '₹0.00';
   
   if (compact) {
-    if (Math.abs(amount) >= 1_000_000) {
-      return `$${(amount / 1_000_000).toFixed(1)}M`;
+    if (Math.abs(amount) >= 10_000_000) {
+      return `₹${(amount / 10_000_000).toFixed(1)}Cr`;
+    }
+    if (Math.abs(amount) >= 100_000) {
+      return `₹${(amount / 100_000).toFixed(1)}L`;
     }
     if (Math.abs(amount) >= 1_000) {
-      return `$${(amount / 1_000).toFixed(1)}k`;
+      return `₹${(amount / 1_000).toFixed(1)}k`;
     }
-    return `$${amount.toFixed(0)}`;
+    return `₹${amount.toFixed(0)}`;
   }
 
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(amount);
 };
 
 /**
- * Format integer or decimal numbers with thousand commas
+ * Format integer or decimal numbers with Indian numbering system
  */
 export const formatNumber = (num, compact = false) => {
   if (num === undefined || num === null || isNaN(num)) return '0';
   
   if (compact) {
-    if (Math.abs(num) >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
+    if (Math.abs(num) >= 10_000_000) return `${(num / 10_000_000).toFixed(1)}Cr`;
+    if (Math.abs(num) >= 100_000) return `${(num / 100_000).toFixed(1)}L`;
     if (Math.abs(num) >= 1_000) return `${(num / 1_000).toFixed(1)}k`;
   }
 
-  return new Intl.NumberFormat('en-US').format(num);
+  return new Intl.NumberFormat('en-IN').format(num);
 };
 
 /**
@@ -58,26 +62,26 @@ export const formatDate = (dateString, format = 'medium') => {
   if (isNaN(date.getTime())) return dateString;
 
   if (format === 'short') {
-    // e.g. "Nov 12"
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric'
-    }).format(date);
-  }
-
-  if (format === 'chart') {
     // e.g. "12 Nov"
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('en-IN', {
       day: 'numeric',
       month: 'short'
     }).format(date);
   }
 
-  // e.g. "Nov 12, 2026, 02:22 PM"
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
+  if (format === 'chart') {
+    // e.g. "12 Nov"
+    return new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric',
+      month: 'short'
+    }).format(date);
+  }
+
+  // e.g. "12 Nov 2026, 02:22 pm"
+  return new Intl.DateTimeFormat('en-IN', {
     day: 'numeric',
+    month: 'short',
+    year: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
   }).format(date);

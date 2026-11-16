@@ -27,7 +27,7 @@ const HEAD_CELLS = [
   { id: 'category', label: 'Category', numeric: false, sortable: true },
   { id: 'date', label: 'Order Date', numeric: false, sortable: true },
   { id: 'status', label: 'Fulfillment Status', numeric: false, sortable: true },
-  { id: 'amount', label: 'Amount ($)', numeric: true, sortable: true }
+  { id: 'amount', label: 'Amount (₹)', numeric: true, sortable: true }
 ];
 
 export default function RecentOrdersTable({ orders = [], darkMode = false }) {

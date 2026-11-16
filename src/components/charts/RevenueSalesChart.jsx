@@ -187,7 +187,7 @@ export default function RevenueSalesChart({ data = [], darkMode = false }) {
               }}
             />
             <Typography variant="caption" sx={{ color: darkMode ? '#a5b4fc' : '#4338ca', fontWeight: 700 }}>
-              Revenue ($)
+              Revenue (₹)
             </Typography>
           </Box>
 
